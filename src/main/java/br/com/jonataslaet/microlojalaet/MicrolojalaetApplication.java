@@ -1,5 +1,6 @@
 package br.com.jonataslaet.microlojalaet;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,11 @@ import br.com.jonataslaet.microlojalaet.domain.Cidade;
 import br.com.jonataslaet.microlojalaet.domain.Cliente;
 import br.com.jonataslaet.microlojalaet.domain.Endereco;
 import br.com.jonataslaet.microlojalaet.domain.Estado;
+import br.com.jonataslaet.microlojalaet.domain.EstadoPagamento;
+import br.com.jonataslaet.microlojalaet.domain.Pagamento;
+import br.com.jonataslaet.microlojalaet.domain.PagamentoComBoleto;
+import br.com.jonataslaet.microlojalaet.domain.PagamentoComCartao;
+import br.com.jonataslaet.microlojalaet.domain.Pedido;
 import br.com.jonataslaet.microlojalaet.domain.Produto;
 import br.com.jonataslaet.microlojalaet.domain.TipoCliente;
 import br.com.jonataslaet.microlojalaet.repositories.CategoriaRepository;
@@ -19,6 +25,8 @@ import br.com.jonataslaet.microlojalaet.repositories.CidadeRepository;
 import br.com.jonataslaet.microlojalaet.repositories.ClienteRepository;
 import br.com.jonataslaet.microlojalaet.repositories.EnderecoRepository;
 import br.com.jonataslaet.microlojalaet.repositories.EstadoRepository;
+import br.com.jonataslaet.microlojalaet.repositories.PagamentoRepository;
+import br.com.jonataslaet.microlojalaet.repositories.PedidoRepository;
 import br.com.jonataslaet.microlojalaet.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -41,6 +49,12 @@ public class MicrolojalaetApplication implements CommandLineRunner{
 	
 	@Autowired
 	ClienteRepository clienteRepository;
+	
+	@Autowired
+	PedidoRepository pedidoRepository;
+	
+	@Autowired
+	PagamentoRepository pagamentoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(MicrolojalaetApplication.class, args);
@@ -80,12 +94,26 @@ public class MicrolojalaetApplication implements CommandLineRunner{
 		Endereco e2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cli1, c2);
 		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
 		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, e2);
+		
+		Pagamento pgto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		Pagamento pgto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+		ped1.setPagamento(pgto1);
+		ped2.setPagamento(pgto2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+		
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
 		produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(e1,e2));
+		pedidoRepository.saveAll(Arrays.asList(ped1,ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pgto1,pgto2));
 	}
 
 }
