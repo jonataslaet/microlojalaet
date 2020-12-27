@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Pagamento implements Serializable {
@@ -52,6 +54,7 @@ public abstract class Pagamento implements Serializable {
 		this.estado = estado;
 	}
 
+	@JsonIgnore
 	public Pedido getPedido() {
 		return pedido;
 	}

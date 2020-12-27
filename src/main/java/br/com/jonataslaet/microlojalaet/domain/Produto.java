@@ -78,6 +78,7 @@ public class Produto implements Serializable {
 		this.categorias = categorias;
 	}
 
+	@JsonIgnore
 	public Set<ItemPedido> getItens() {
 		return itens;
 	}
@@ -86,6 +87,7 @@ public class Produto implements Serializable {
 		this.itens = pedidos;
 	}
 
+	@JsonIgnore
 	public List<Pedido> getPedidos() {
 		List<Pedido> pedidos = new ArrayList<>();
 		for (ItemPedido itemPedido : this.getItens()) {
