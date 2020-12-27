@@ -14,6 +14,7 @@ import br.com.jonataslaet.microlojalaet.domain.Cliente;
 import br.com.jonataslaet.microlojalaet.domain.Endereco;
 import br.com.jonataslaet.microlojalaet.domain.Estado;
 import br.com.jonataslaet.microlojalaet.domain.EstadoPagamento;
+import br.com.jonataslaet.microlojalaet.domain.ItemPedido;
 import br.com.jonataslaet.microlojalaet.domain.Pagamento;
 import br.com.jonataslaet.microlojalaet.domain.PagamentoComBoleto;
 import br.com.jonataslaet.microlojalaet.domain.PagamentoComCartao;
@@ -25,6 +26,7 @@ import br.com.jonataslaet.microlojalaet.repositories.CidadeRepository;
 import br.com.jonataslaet.microlojalaet.repositories.ClienteRepository;
 import br.com.jonataslaet.microlojalaet.repositories.EnderecoRepository;
 import br.com.jonataslaet.microlojalaet.repositories.EstadoRepository;
+import br.com.jonataslaet.microlojalaet.repositories.ItemPedidoRepository;
 import br.com.jonataslaet.microlojalaet.repositories.PagamentoRepository;
 import br.com.jonataslaet.microlojalaet.repositories.PedidoRepository;
 import br.com.jonataslaet.microlojalaet.repositories.ProdutoRepository;
@@ -56,6 +58,10 @@ public class MicrolojalaetApplication implements CommandLineRunner{
 	@Autowired
 	PagamentoRepository pagamentoRepository;
 	
+	@Autowired
+	ItemPedidoRepository itemPedidoRepository;
+	
+	
 	public static void main(String[] args) {
 		SpringApplication.run(MicrolojalaetApplication.class, args);
 	}
@@ -65,9 +71,9 @@ public class MicrolojalaetApplication implements CommandLineRunner{
 		Categoria cat1 = new Categoria(null, "Informática");
 		Categoria cat2 = new Categoria(null, "Eletrônico");
 		
-		Produto p1 = new Produto(null, "Notebook", 2780.00);
-		Produto p2 = new Produto(null, "Impressora", 790.00);
-		Produto p3 = new Produto(null, "Cadeira", 320.00);
+		Produto p1 = new Produto(null, "Computador", 2000.00);
+		Produto p2 = new Produto(null, "Impressora", 800.00);
+		Produto p3 = new Produto(null, "Mouse", 80.00);
 		
 		cat1.getProdutos().addAll(Arrays.asList(p1, p2, p3));
 		cat2.getProdutos().add(p2);
@@ -106,6 +112,17 @@ public class MicrolojalaetApplication implements CommandLineRunner{
 		
 		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
 		
+		ItemPedido ip1 = new ItemPedido(ped1, p1, 0.00, 1, 2000.00);
+		ItemPedido ip2 = new ItemPedido(ped1, p3, 0.00, 2, 80.00);
+		ped1.getItens().addAll(Arrays.asList(ip1, ip2));
+		
+		ItemPedido ip3 = new ItemPedido(ped2, p2, 100.00, 1, 800.00);
+		ped2.getItens().addAll(Arrays.asList(ip3));
+		
+		p1.getItens().add(ip1);
+		p2.getItens().add(ip3);
+		p3.getItens().add(ip2);
+		
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
@@ -114,6 +131,7 @@ public class MicrolojalaetApplication implements CommandLineRunner{
 		enderecoRepository.saveAll(Arrays.asList(e1,e2));
 		pedidoRepository.saveAll(Arrays.asList(ped1,ped2));
 		pagamentoRepository.saveAll(Arrays.asList(pgto1,pgto2));
+		itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
 	}
 
 }
