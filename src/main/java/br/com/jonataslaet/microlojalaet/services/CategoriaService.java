@@ -1,14 +1,20 @@
 package br.com.jonataslaet.microlojalaet.services;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import br.com.jonataslaet.microlojalaet.controllers.CategoriaDTO;
 import br.com.jonataslaet.microlojalaet.controllers.exceptions.DataIntegrityException;
 import br.com.jonataslaet.microlojalaet.controllers.exceptions.ObjectNotFoundException;
 import br.com.jonataslaet.microlojalaet.domain.Categoria;
@@ -20,6 +26,11 @@ public class CategoriaService {
 	@Autowired
 	CategoriaRepository cr;
 
+	public List<CategoriaDTO> findAll() {
+		List<CategoriaDTO> categoriasDTO = cr.findAll().stream().map(CategoriaDTO::new).collect(Collectors.toList());
+		return categoriasDTO;
+	}
+	
 	public Categoria find(Integer id) {
 		Optional<Categoria> categoria = cr.findById(id);
 		return categoria.orElseThrow(() -> new ObjectNotFoundException(
@@ -48,5 +59,10 @@ public class CategoriaService {
 			throw new DataIntegrityException("Não é possível deletar uma Categoria que possua Produto associado a ela");
 		}
 		return ResponseEntity.noContent().build();
+	}
+	
+	public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction){
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		return cr.findAll(pageRequest);
 	}
 }
