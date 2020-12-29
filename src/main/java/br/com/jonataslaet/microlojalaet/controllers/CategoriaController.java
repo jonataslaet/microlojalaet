@@ -1,7 +1,8 @@
 package br.com.jonataslaet.microlojalaet.controllers;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,7 +48,7 @@ public class CategoriaController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	ResponseEntity<?> insert(@RequestBody Categoria categoria) {
+	ResponseEntity<?> insert(@Valid @RequestBody CategoriaDTO categoria) {
 		return cs.insert(categoria);
 	}
 	

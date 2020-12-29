@@ -37,9 +37,10 @@ public class CategoriaService {
 				"Objeto " + Categoria.class.getSimpleName() + " de id = " + id + " não encontrado"));
 	}
 
-	public ResponseEntity<Object> insert(Categoria categoria) {
-		cr.save(categoria);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoria.getId())
+	public ResponseEntity<Object> insert(CategoriaDTO categoriaDTO) {
+		Categoria cat = fromDTO(categoriaDTO);
+		cr.save(cat);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cat.getId())
 				.toUri();
 		return ResponseEntity.created(uri).build();
 	}
@@ -64,5 +65,9 @@ public class CategoriaService {
 	public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction){
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		return cr.findAll(pageRequest);
+	}
+	
+	public Categoria fromDTO(CategoriaDTO categoriaDTO) {
+		return new Categoria(categoriaDTO.getId(), categoriaDTO.getNome());
 	}
 }
