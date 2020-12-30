@@ -2,7 +2,6 @@ package br.com.jonataslaet.microlojalaet.controllers;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 

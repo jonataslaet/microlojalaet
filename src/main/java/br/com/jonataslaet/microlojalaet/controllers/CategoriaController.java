@@ -53,7 +53,7 @@ public class CategoriaController {
 	}
 	
 	@RequestMapping(value="/{id}", method = RequestMethod.PUT)
-	ResponseEntity<?> update(@RequestBody Categoria categoria, @PathVariable Integer id) {
+	ResponseEntity<?> update(@Valid @RequestBody CategoriaDTO categoria, @PathVariable Integer id) {
 		return cs.update(categoria, id);
 	}
 	

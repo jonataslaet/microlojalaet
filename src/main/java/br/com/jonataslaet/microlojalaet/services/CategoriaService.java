@@ -45,8 +45,9 @@ public class CategoriaService {
 		return ResponseEntity.created(uri).build();
 	}
 
-	public ResponseEntity<Object> update(Categoria categoriaAtual, Integer id) {
+	public ResponseEntity<Object> update(CategoriaDTO categoriaAtualDTO, Integer id) {
 		find(id);
+		Categoria categoriaAtual = fromDTO(categoriaAtualDTO);
 		categoriaAtual.setId(id);
 		cr.save(categoriaAtual);
 		return ResponseEntity.noContent().build();
