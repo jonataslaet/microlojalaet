@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -19,6 +21,15 @@ public class ResourceExceptionHandler {
 	@ExceptionHandler(DataIntegrityException.class)
 	public ResponseEntity<StandardError> objectNotDataIntegrity(DataIntegrityException ex, HttpServletRequest req) {
 		StandardError error = new StandardError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+	}
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<StandardError> objectNotValidated(MethodArgumentNotValidException ex, HttpServletRequest req) {
+		ValidationError error = new ValidationError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage(), System.currentTimeMillis());
+		for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
+			error.getErrors().add(new CustomFieldError(fieldError.getField(), fieldError.getDefaultMessage()));
+		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
 	}
 }
