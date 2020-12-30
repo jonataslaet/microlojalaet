@@ -46,10 +46,10 @@ public class CategoriaService {
 	}
 
 	public ResponseEntity<Object> update(CategoriaDTO categoriaAtualDTO, Integer id) {
-		find(id);
-		Categoria categoriaAtual = fromDTO(categoriaAtualDTO);
-		categoriaAtual.setId(id);
-		cr.save(categoriaAtual);
+		Categoria categoria = find(id);
+		updateData(categoriaAtualDTO, categoria);
+		categoria.setId(id);
+		cr.save(categoria);
 		return ResponseEntity.noContent().build();
 	}
 
@@ -70,5 +70,9 @@ public class CategoriaService {
 	
 	public Categoria fromDTO(CategoriaDTO categoriaDTO) {
 		return new Categoria(categoriaDTO.getId(), categoriaDTO.getNome());
+	}
+	
+	private void updateData(CategoriaDTO categoriaAtualDTO, Categoria categoriaAntigo) {
+		categoriaAntigo.setNome(categoriaAtualDTO.getNome());
 	}
 }
