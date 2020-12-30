@@ -1,10 +1,15 @@
 package br.com.jonataslaet.microlojalaet.controllers;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.jonataslaet.microlojalaet.domain.Cliente;
@@ -19,7 +24,29 @@ public class ClienteController {
 	
 	@RequestMapping(value="{id}", method = RequestMethod.GET)
 	ResponseEntity<?> buscar(@PathVariable Integer id) {
-		Cliente cliente = cs.buscar(id);
+		Cliente cliente = cs.find(id);
 		return ResponseEntity.ok().body(cliente);
+	}
+	
+
+	@RequestMapping(value="/page", method = RequestMethod.GET)
+	ResponseEntity<Page<ClienteDTO>> findEachPage(
+			@RequestParam (value = "page", defaultValue = "0") Integer page, 
+			@RequestParam (value = "linesPerPage", defaultValue = "24") Integer linesPerPage, 
+			@RequestParam (value = "orderBy", defaultValue = "nome") String orderBy, 
+			@RequestParam (value = "direction", defaultValue = "DESC") String direction) {
+		Page<Cliente> clientes = cs.findPage(page, linesPerPage, orderBy, direction);
+		Page<ClienteDTO> clientesDTO = clientes.map(cliente -> new ClienteDTO(cliente));
+		return ResponseEntity.ok().body(clientesDTO);
+	}
+	
+	@RequestMapping(value="/{id}", method = RequestMethod.PUT)
+	ResponseEntity<?> update(@Valid @RequestBody ClienteDTO cliente, @PathVariable Integer id) {
+		return cs.update(cliente, id);
+	}
+	
+	@RequestMapping(value="/{id}", method = RequestMethod.DELETE)
+	ResponseEntity<?> delete(@PathVariable Integer id) {
+		return cs.delete(id);
 	}
 }
