@@ -40,6 +40,11 @@ public class ClienteController {
 		return ResponseEntity.ok().body(clientesDTO);
 	}
 	
+	@RequestMapping(method = RequestMethod.POST)
+	ResponseEntity<?> insert(@Valid @RequestBody ClienteNewDTO cliente) {
+		return cs.insert(cliente);
+	}
+	
 	@RequestMapping(value="/{id}", method = RequestMethod.PUT)
 	ResponseEntity<?> update(@Valid @RequestBody ClienteDTO cliente, @PathVariable Integer id) {
 		return cs.update(cliente, id);
