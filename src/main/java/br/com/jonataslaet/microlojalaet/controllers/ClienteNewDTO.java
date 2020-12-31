@@ -2,20 +2,38 @@ package br.com.jonataslaet.microlojalaet.controllers;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
+import br.com.jonataslaet.microlojalaet.services.validations.ClienteInsert;
+
+@ClienteInsert
 public class ClienteNewDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	@NotEmpty(message = "O preenchimento do nome é obrigatório")
+	@Size(min = 5, max = 120, message = "O tamanho do nome deve estar entre 5 e 80 caracteres")
 	private String nome;
+	
+	@NotEmpty(message = "O preenchimento do nome é obrigatório")
+	@Email(message = "Email inválido")
 	private String email;
+	
+	@NotEmpty(message = "O preenchimento do nome é obrigatório")
 	private String cpfOuCnpj;
+	
 	private Integer tipo;
 	
+	@NotEmpty(message = "O preenchimento do nome é obrigatório")
 	private String logradouro;
 	private String numero;
 	private String complemento;
+	
+	@NotEmpty(message = "O preenchimento do nome é obrigatório")
 	private String bairro;
+	
+	@NotEmpty(message = "O preenchimento do nome é obrigatório")
 	private String cep;
 	
 	private Integer cidadeId;
