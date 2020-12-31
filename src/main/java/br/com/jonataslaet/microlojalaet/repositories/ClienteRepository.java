@@ -8,7 +8,7 @@ import br.com.jonataslaet.microlojalaet.domain.Cliente;
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Integer>{
 
-	String findByEmail(String email);
+	Cliente findByEmail(String email);
 	Boolean existsByEmail(String email);
 	
 	

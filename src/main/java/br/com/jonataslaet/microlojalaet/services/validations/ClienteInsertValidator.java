@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-//import br.com.jonataslaet.microlojalaet.services.validations.ClienteInsert;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,7 +27,7 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
 			errors.add(new CustomFieldError("cpfOuCnpj", "CPF inválido"));
 		}
 		
-		else if (clienteNewDTO.getTipo().equals(TipoCliente.PESSOAJURIDICA.getCodigo()) && !BR.isValidCNPJ(clienteNewDTO.getCpfOuCnpj())) {
+		if (clienteNewDTO.getTipo().equals(TipoCliente.PESSOAJURIDICA.getCodigo()) && !BR.isValidCNPJ(clienteNewDTO.getCpfOuCnpj())) {
 			errors.add(new CustomFieldError("cpfOuCnpj", "CNPJ inválido"));
 		}
 		
