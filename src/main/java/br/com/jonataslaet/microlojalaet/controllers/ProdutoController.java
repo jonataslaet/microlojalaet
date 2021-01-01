@@ -30,8 +30,8 @@ public class ProdutoController {
 	
 	@RequestMapping(method = RequestMethod.GET)
 	ResponseEntity<Page<ProdutoDTO>> findEachPage(
-			@RequestParam (value = "produto", defaultValue = "") String nomeProduto, 
-			@RequestParam (value = "categorias", defaultValue = "0") String nomeCategorias, 
+			@RequestParam (value = "nome", defaultValue = "") String nomeProduto, 
+			@RequestParam (value = "categorias", defaultValue = "") String nomeCategorias, 
 			@RequestParam (value = "page", defaultValue = "0") Integer page, 
 			@RequestParam (value = "linesPerPage", defaultValue = "24") Integer linesPerPage, 
 			@RequestParam (value = "orderBy", defaultValue = "nome") String orderBy, 
