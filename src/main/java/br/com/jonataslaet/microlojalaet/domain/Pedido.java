@@ -113,6 +113,9 @@ public class Pedido implements Serializable {
 		this.itens = itens;
 	}
 
+	public Double getPrecoTotal() {
+		return this.getItens().stream().map(i -> i.getSubTotal()).mapToDouble(v -> v).sum();
+	}
 
 	@Override
 	public int hashCode() {
