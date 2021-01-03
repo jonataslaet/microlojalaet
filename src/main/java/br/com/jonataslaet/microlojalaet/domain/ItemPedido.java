@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import br.com.jonataslaet.microlojalaet.services.validations.utils.BR;
+
 @Entity
 public class ItemPedido implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -108,5 +110,21 @@ public class ItemPedido implements Serializable {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(getProduto().getNome());
+		builder.append(", Qte: ");
+		builder.append(getQuantidade());
+		builder.append(", Preço unitário: ");
+		builder.append(BR.getValorEmDinheiro(getPreco()));
+		builder.append(", Subtotal: ");
+		builder.append(getSubTotal());
+		builder.append("\n");
+		return builder.toString();
+	}
+	
+	
 	
  }

@@ -1,5 +1,10 @@
 package br.com.jonataslaet.microlojalaet.services.validations.utils;
 
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 //Fonte: https://gist.github.com/adrianoluis/5043397d378ae506d87366abb0ab4e30
 public class BR {
 	// CPF
@@ -46,5 +51,15 @@ public class BR {
 		final Integer digit1 = calculate(tin.substring(0, 12), weightTin);
 		final Integer digit2 = calculate(tin.substring(0, 12) + digit1, weightTin);
 		return tin.equals(tin.substring(0, 12) + digit1.toString() + digit2.toString());
+	}
+	
+	public static String getValorEmDinheiro(Double valor) {
+		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+		return nf.format(valor);
+	}
+	
+	public static String getDataFormatada(Date data, String formato) {
+		SimpleDateFormat sdf = new SimpleDateFormat(formato);
+		return sdf.format(data);
 	}
 }

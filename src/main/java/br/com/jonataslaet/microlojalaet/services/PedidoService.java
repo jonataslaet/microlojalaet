@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.jonataslaet.microlojalaet.controllers.exceptions.ObjectNotFoundException;
+import br.com.jonataslaet.microlojalaet.domain.Cliente;
 import br.com.jonataslaet.microlojalaet.domain.EstadoPagamento;
 import br.com.jonataslaet.microlojalaet.domain.ItemPedido;
 import br.com.jonataslaet.microlojalaet.domain.PagamentoComBoleto;
@@ -36,6 +37,9 @@ public class PedidoService {
 	@Autowired
 	ProdutoService produtoService;
 	
+	@Autowired
+	ClienteService clienteService;
+	
 	public Pedido buscar(Integer id) {
 		Optional<Pedido> pedido = pedidoRepository.findById(id);
 		return pedido.orElseThrow(() -> new ObjectNotFoundException(
@@ -43,6 +47,10 @@ public class PedidoService {
 	}
 
 	public ResponseEntity<Object> insert(Pedido pedido) {
+		
+		Cliente cliente = clienteService.find(pedido.getCliente().getId());
+		
+		pedido.setCliente(cliente);
 		pedido.setInstante(new Date());
 		pedido.getPagamento().setEstado(EstadoPagamento.PENDENTE.getCodigo());
 		pedido.getPagamento().setPedido(pedido);
@@ -57,12 +65,13 @@ public class PedidoService {
 		
 		for (ItemPedido item : pedido.getItens()) {
 			item.setDesconto(0.0);
-			item.setPreco(produtoService.buscar(item.getProduto().getId()).getPreco());
+			item.setProduto(produtoService.buscar(item.getProduto().getId()));
+			item.setPreco(item.getProduto().getPreco());
 			item.setPedido(pedido);
 		}
 		
 		itemPedidoRepository.saveAll(pedido.getItens());
-		
+		System.out.println(pedido);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(pedido.getId())
 				.toUri();
 		return ResponseEntity.created(uri).build();

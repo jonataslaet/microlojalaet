@@ -17,6 +17,8 @@ import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import br.com.jonataslaet.microlojalaet.services.validations.utils.BR;
+
 @Entity
 public class Pedido implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -141,6 +143,26 @@ public class Pedido implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Pedido número: ");
+		builder.append(getId());
+		builder.append(", Instante: ");
+		builder.append(BR.getDataFormatada(getInstante(), "dd/MM/yyyy HH:mm:ss"));
+		builder.append(", Cliente: ");
+		builder.append(getCliente().getNome());
+		builder.append(", Situação do pagamento: ");
+		builder.append(EstadoPagamento.toEnum(getPagamento().getEstado()).getDescricao());
+		builder.append("\nDetalhes: \n");
+		for (ItemPedido itemPedido : itens) {
+			builder.append(itemPedido.toString());
+		}
+		builder.append(", Valor total: ");
+		builder.append(BR.getValorEmDinheiro(getPrecoTotal()));
+		return builder.toString();
 	}
 	
 }
