@@ -40,6 +40,9 @@ public class PedidoService {
 	@Autowired
 	ClienteService clienteService;
 	
+	@Autowired
+	EmailService emailService;
+	
 	public Pedido buscar(Integer id) {
 		Optional<Pedido> pedido = pedidoRepository.findById(id);
 		return pedido.orElseThrow(() -> new ObjectNotFoundException(
@@ -71,7 +74,7 @@ public class PedidoService {
 		}
 		
 		itemPedidoRepository.saveAll(pedido.getItens());
-		System.out.println(pedido);
+		emailService.sendOrderConfirmationEmail(pedido);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(pedido.getId())
 				.toUri();
 		return ResponseEntity.created(uri).build();
