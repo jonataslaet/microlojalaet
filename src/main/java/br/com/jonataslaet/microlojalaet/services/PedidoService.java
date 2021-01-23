@@ -5,10 +5,14 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import br.com.jonataslaet.microlojalaet.controllers.exceptions.AuthorizationException;
 import br.com.jonataslaet.microlojalaet.controllers.exceptions.ObjectNotFoundException;
 import br.com.jonataslaet.microlojalaet.domain.Cliente;
 import br.com.jonataslaet.microlojalaet.domain.EstadoPagamento;
@@ -18,6 +22,8 @@ import br.com.jonataslaet.microlojalaet.domain.Pedido;
 import br.com.jonataslaet.microlojalaet.repositories.ItemPedidoRepository;
 import br.com.jonataslaet.microlojalaet.repositories.PagamentoRepository;
 import br.com.jonataslaet.microlojalaet.repositories.PedidoRepository;
+import br.com.jonataslaet.microlojalaet.security.UsuarioLogado;
+import br.com.jonataslaet.microlojalaet.security.UsuarioSS;
 
 @Service
 public class PedidoService {
@@ -78,5 +84,16 @@ public class PedidoService {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(pedido.getId())
 				.toUri();
 		return ResponseEntity.created(uri).build();
+	}
+	
+	public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction){
+		UsuarioSS user = UsuarioLogado.authenticated();
+		if (user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		Cliente cliente = clienteService.find(user.getId());
+		return pedidoRepository.findByCliente(cliente, pageRequest);
 	}
 }
