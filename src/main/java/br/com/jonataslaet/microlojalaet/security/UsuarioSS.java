@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.jonataslaet.microlojalaet.domain.Cliente;
+import br.com.jonataslaet.microlojalaet.domain.Perfil;
 
 public class UsuarioSS implements UserDetails{
 	private static final long serialVersionUID = 1L;
@@ -18,10 +19,18 @@ public class UsuarioSS implements UserDetails{
 	private Collection<? extends GrantedAuthority> authorities;
 	
 	public UsuarioSS(Cliente cli) {
-		this.id = cli.getId();
+		this.setId(cli.getId());
 		this.email = cli.getEmail();
 		this.senha = cli.getSenha();
 		this.authorities = cli.getPerfis().stream().map(p -> new SimpleGrantedAuthority(p.getDescricao())).collect(Collectors.toList());
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	@Override
@@ -57,6 +66,10 @@ public class UsuarioSS implements UserDetails{
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	public boolean hasRole(Perfil admin) {
+		return getAuthorities().contains(new SimpleGrantedAuthority(admin.getDescricao()));
 	}
 
 }

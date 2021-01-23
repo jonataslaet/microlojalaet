@@ -15,14 +15,18 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.jonataslaet.microlojalaet.controllers.ClienteDTO;
 import br.com.jonataslaet.microlojalaet.controllers.ClienteNewDTO;
+import br.com.jonataslaet.microlojalaet.controllers.exceptions.AuthorizationException;
 import br.com.jonataslaet.microlojalaet.controllers.exceptions.DataIntegrityException;
 import br.com.jonataslaet.microlojalaet.controllers.exceptions.ObjectNotFoundException;
 import br.com.jonataslaet.microlojalaet.domain.Cidade;
 import br.com.jonataslaet.microlojalaet.domain.Cliente;
 import br.com.jonataslaet.microlojalaet.domain.Endereco;
+import br.com.jonataslaet.microlojalaet.domain.Perfil;
 import br.com.jonataslaet.microlojalaet.domain.TipoCliente;
 import br.com.jonataslaet.microlojalaet.repositories.ClienteRepository;
 import br.com.jonataslaet.microlojalaet.repositories.EnderecoRepository;
+import br.com.jonataslaet.microlojalaet.security.UsuarioLogado;
+import br.com.jonataslaet.microlojalaet.security.UsuarioSS;
 
 @Service
 public class ClienteService {
@@ -37,6 +41,10 @@ public class ClienteService {
 	BCryptPasswordEncoder encoder;
 
 	public Cliente find(Integer id) {
+		UsuarioSS usuario = UsuarioLogado.authenticated();
+		if (usuario == null || !usuario.hasRole(Perfil.ADMIN) && !id.equals(usuario.getId())) {
+			throw new AuthorizationException("Acesso negado");
+		}
 		Optional<Cliente> cliente = clienteRepository.findById(id);
 		return cliente.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto " + Cliente.class.getSimpleName() + " de id = " + id + " não encontrado"));
