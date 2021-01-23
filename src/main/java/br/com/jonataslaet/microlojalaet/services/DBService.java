@@ -19,6 +19,7 @@ import br.com.jonataslaet.microlojalaet.domain.Pagamento;
 import br.com.jonataslaet.microlojalaet.domain.PagamentoComBoleto;
 import br.com.jonataslaet.microlojalaet.domain.PagamentoComCartao;
 import br.com.jonataslaet.microlojalaet.domain.Pedido;
+import br.com.jonataslaet.microlojalaet.domain.Perfil;
 import br.com.jonataslaet.microlojalaet.domain.Produto;
 import br.com.jonataslaet.microlojalaet.domain.TipoCliente;
 import br.com.jonataslaet.microlojalaet.repositories.CategoriaRepository;
@@ -116,13 +117,19 @@ public class DBService {
 		est1.getCidades().addAll(Arrays.asList(c1));
 		est2.getCidades().addAll(Arrays.asList(c2, c3));
 		
-		Cliente cli1 = new Cliente(null, "Jonatas Laet", "jonataslaet@gmail.com", "36378912377", TipoCliente.PESSOAFISICA, encoder.encode("blendo273"));
+		Cliente cli1 = new Cliente(null, "Kryssino", "kryssino@gmail.com", "38900656007", TipoCliente.PESSOAFISICA, encoder.encode("blendo273"));
 		cli1.getTelefones().add("27363323");
 		cli1.getTelefones().add("93838393");
 		
+		Cliente cli2 = new Cliente(null, "Jonatas Laet", "jonataslaet@gmail.com", "50382214080", TipoCliente.PESSOAFISICA, encoder.encode("blendo273"));
+		cli2.addPerfil(Perfil.ADMIN);
+		cli1.getTelefones().add("32323973");
+		
 		Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 203", "Jardim", "38220834", cli1, c1);
 		Endereco e2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cli1, c2);
+		Endereco e3 = new Endereco(null, "Avenida Floriano", "273", "Sala 333", "Centro", "38777012", cli2, c2);
 		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+		cli2.getEnderecos().addAll(Arrays.asList(e3));
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		
@@ -151,8 +158,8 @@ public class DBService {
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2, cat3, cat4, cat5, cat6, cat7));
 		produtoRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11));
-		clienteRepository.saveAll(Arrays.asList(cli1));
-		enderecoRepository.saveAll(Arrays.asList(e1,e2));
+		clienteRepository.saveAll(Arrays.asList(cli1, cli2));
+		enderecoRepository.saveAll(Arrays.asList(e1,e2,e3));
 		pedidoRepository.saveAll(Arrays.asList(ped1,ped2));
 		pagamentoRepository.saveAll(Arrays.asList(pgto1,pgto2));
 		itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
