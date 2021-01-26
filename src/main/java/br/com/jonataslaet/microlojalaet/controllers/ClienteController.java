@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.jonataslaet.microlojalaet.domain.Cliente;
 import br.com.jonataslaet.microlojalaet.services.ClienteService;
@@ -53,5 +54,10 @@ public class ClienteController {
 	@RequestMapping(value="/{id}", method = RequestMethod.DELETE)
 	ResponseEntity<?> delete(@PathVariable Integer id) {
 		return cs.delete(id);
+	}
+	
+	@RequestMapping(value="/picture", method = RequestMethod.POST)
+	ResponseEntity<?> uploadFile(@RequestParam(name="file") MultipartFile multipartFile) {
+		return cs.uploadProfilePicture(multipartFile);
 	}
 }

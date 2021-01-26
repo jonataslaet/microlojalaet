@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.jonataslaet.microlojalaet.controllers.ClienteDTO;
@@ -39,6 +40,9 @@ public class ClienteService {
 	
 	@Autowired
 	BCryptPasswordEncoder encoder;
+	
+	@Autowired
+	S3Service s3Service;
 
 	public Cliente find(Integer id) {
 		UsuarioSS usuario = UsuarioLogado.authenticated();
@@ -102,5 +106,10 @@ public class ClienteService {
 			cliente.getTelefones().add(clienteDTO.getTelefone3());
 		}
 		return cliente;
+	}
+	
+	public ResponseEntity<Object> uploadProfilePicture(MultipartFile profilePicture) {
+		URI uri = s3Service.uploadFile(profilePicture);
+		return ResponseEntity.created(uri).build();
 	}
 }
