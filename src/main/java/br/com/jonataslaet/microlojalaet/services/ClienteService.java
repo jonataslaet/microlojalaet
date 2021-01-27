@@ -65,6 +65,18 @@ public class ClienteService {
 				"Objeto " + Cliente.class.getSimpleName() + " de id = " + id + " não encontrado"));
 	}
 	
+	public Cliente findByEmail(String email) {
+		UsuarioSS usuario = UsuarioLogado.authenticated();
+		if (usuario == null || !usuario.hasRole(Perfil.ADMIN) && !email.equals(usuario.getUsername())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		Cliente cliente = clienteRepository.findByEmail(email);
+		if(cliente == null) {
+			new ObjectNotFoundException("Objeto " + Cliente.class.getSimpleName() + " de email = " + email + " não encontrado");
+		}
+		return cliente;
+	}
+	
 	public ResponseEntity<Object> insert(ClienteNewDTO clienteNewDTO) {
 		Cliente cliente = fromDTO(clienteNewDTO);
 		clienteRepository.save(cliente);

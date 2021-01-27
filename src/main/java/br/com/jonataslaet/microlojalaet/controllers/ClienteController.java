@@ -29,6 +29,12 @@ public class ClienteController {
 		return ResponseEntity.ok().body(cliente);
 	}
 	
+	@RequestMapping(value="/email", method = RequestMethod.GET)
+	ResponseEntity<?> buscarClientePorEmail(@RequestParam(name="value") String email) {
+		Cliente cliente = cs.findByEmail(email);
+		return ResponseEntity.ok().body(cliente);
+	}
+	
 
 	@RequestMapping(value="/page", method = RequestMethod.GET)
 	ResponseEntity<Page<ClienteDTO>> findEachPage(
