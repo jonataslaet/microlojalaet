@@ -109,7 +109,18 @@ public class ClienteService {
 	}
 	
 	public ResponseEntity<Object> uploadProfilePicture(MultipartFile profilePicture) {
+		
+		UsuarioSS usuario = UsuarioLogado.authenticated();
+		if (usuario == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
 		URI uri = s3Service.uploadFile(profilePicture);
+		
+		Cliente cliente = find(usuario.getId());
+		cliente.setImageUrl(uri.toString());
+		clienteRepository.save(cliente);
+		
 		return ResponseEntity.created(uri).build();
 	}
 }
