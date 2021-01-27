@@ -9,6 +9,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+
 @ControllerAdvice
 public class ResourceExceptionHandler {
 
@@ -37,5 +41,30 @@ public class ResourceExceptionHandler {
 	public ResponseEntity<StandardError> notAuthorized(AuthorizationException ex, HttpServletRequest req) {
 		StandardError error = new StandardError(HttpStatus.FORBIDDEN.value(), ex.getMessage(), System.currentTimeMillis());
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+	}
+	
+	@ExceptionHandler(FileException.class)
+	public ResponseEntity<StandardError> fileException(FileException ex, HttpServletRequest req) {
+		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+	}
+	
+	@ExceptionHandler(AmazonServiceException.class)
+	public ResponseEntity<StandardError> amazonException(AmazonServiceException ex, HttpServletRequest req) {
+		HttpStatus code = HttpStatus.valueOf(ex.getErrorCode());
+		StandardError error = new StandardError(code.value(), ex.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(code).body(error);
+	}
+	
+	@ExceptionHandler(AmazonClientException.class)
+	public ResponseEntity<StandardError> amazonClientException(AmazonClientException ex, HttpServletRequest req) {
+		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+	}
+	
+	@ExceptionHandler(AmazonS3Exception.class)
+	public ResponseEntity<StandardError> amazonS3Exception(AmazonS3Exception ex, HttpServletRequest req) {
+		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
 }
