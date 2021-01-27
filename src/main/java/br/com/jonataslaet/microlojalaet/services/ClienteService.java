@@ -1,9 +1,11 @@
 package br.com.jonataslaet.microlojalaet.services;
 
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +45,12 @@ public class ClienteService {
 	
 	@Autowired
 	S3Service s3Service;
+	
+	@Autowired
+	ImageService imageService;
+	
+	@Value("${img.prefix.client.profile}")
+	String prefix;
 
 	public Cliente find(Integer id) {
 		UsuarioSS usuario = UsuarioLogado.authenticated();
@@ -115,11 +123,10 @@ public class ClienteService {
 			throw new AuthorizationException("Acesso negado");
 		}
 		
-		URI uri = s3Service.uploadFile(profilePicture);
+		BufferedImage jpgImage = imageService.getJpgImageFromFile(profilePicture);
+		String fileName = prefix + usuario.getId() + ".jpg";
 		
-		Cliente cliente = find(usuario.getId());
-		cliente.setImageUrl(uri.toString());
-		clienteRepository.save(cliente);
+		URI uri = s3Service.uploadFile(imageService.getInputStream(jpgImage, "jpg"), fileName, "image");
 		
 		return ResponseEntity.created(uri).build();
 	}

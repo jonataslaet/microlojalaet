@@ -49,8 +49,6 @@ public class Cliente implements Serializable {
 	@CollectionTable(name="PERFIL")
 	private Set<Integer> perfis = new HashSet<>();
 	
-	private String imageUrl;
-	
 	public Cliente() {
 		addPerfil(Perfil.CLIENTE);
 	}
@@ -147,14 +145,6 @@ public class Cliente implements Serializable {
 		perfis.add(perfil.getCodigo());
 	}
 	
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
