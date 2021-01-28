@@ -20,14 +20,14 @@ public class CidadeController {
 	CidadeService cidadeService;
 	
 	@RequestMapping(value="{id}", method = RequestMethod.GET)
-	ResponseEntity<?> find(@PathVariable Integer id) {
-		Cidade cidade = cidadeService.find(id);
+	ResponseEntity<?> find(@PathVariable Integer idEstado, @PathVariable Integer id) {
+		Cidade cidade = cidadeService.find(idEstado, id);
 		return ResponseEntity.ok().body(cidade);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
 	ResponseEntity<List<CidadeDTO>> findAll(@PathVariable Integer idEstado) {
-		List<CidadeDTO> cidadesDTO = cidadeService.findAll(idEstado);
+		List<CidadeDTO> cidadesDTO = cidadeService.findAllByEstado(idEstado);
 		return ResponseEntity.ok().body(cidadesDTO);
 	}
 	
