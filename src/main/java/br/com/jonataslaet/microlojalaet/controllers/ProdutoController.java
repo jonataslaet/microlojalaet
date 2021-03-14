@@ -35,7 +35,7 @@ public class ProdutoController {
 			@RequestParam (value = "page", defaultValue = "0") Integer page, 
 			@RequestParam (value = "linesPerPage", defaultValue = "24") Integer linesPerPage, 
 			@RequestParam (value = "orderBy", defaultValue = "nome") String orderBy, 
-			@RequestParam (value = "direction", defaultValue = "DESC") String direction) {
+			@RequestParam (value = "direction", defaultValue = "ASC") String direction) {
 		String decodedProductName = URL.decodeParam(nomeProduto);
 		List<Integer> idsDasCategorias = URL.decodificaStringNumaListaDeInteiros(nomeCategorias);
 		Page<Produto> produtos = produtoService.search(decodedProductName, idsDasCategorias, page, linesPerPage, orderBy, direction);
